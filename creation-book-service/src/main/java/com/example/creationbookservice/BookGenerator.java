@@ -37,15 +37,19 @@ public class BookGenerator {
         builderName.append("Book ").append(localDateTime);
         builderDescription.append("About Book ").append(localDateTime);
 
-        Book book = new Book(random.nextInt(400),
-                builderName.toString(),
-                builderDescription.toString(),
-                "UNCHECKED",
-                random.nextInt(400) * 10 + 1);
+        Book book = Book.builder()
+                .id(random.nextInt(400))
+                .name(builderName.toString())
+                .description(builderDescription.toString())
+                .status("UNCHECKED")
+                .price(random.nextInt(400) * 10 + 1)
+                .build();
 
-        BookEvent bookEvent = new BookEvent("WAITING FOR VERIFICATION",
-                "The book must be checked",
-                book);
+        BookEvent bookEvent = BookEvent.builder()
+                .bookEventStatus("WAITING FOR VERIFICATION")
+                .message("The book must be checked")
+                .book(book)
+                .build();
 
         kafkaTemplate.send("new_book_topic", bookEvent);
 

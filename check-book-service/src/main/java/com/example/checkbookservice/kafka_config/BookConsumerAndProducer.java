@@ -21,14 +21,18 @@ public class BookConsumerAndProducer {
     @KafkaListener(topics = "new_book_topic", groupId = "checkBooks")
     void bookConsumeAndProduce(CheckBookEvent checkBookEvent) {
 
-        Book checkedBook = new Book(checkBookEvent.getBook().getId(),
-                checkBookEvent.getBook().getName(),
-                checkBookEvent.getBook().getDescription(),
-                "CHECKED",
-                checkBookEvent.getBook().getPrice());
-        CheckBookEvent checkEvent = new CheckBookEvent("CHECKED",
-                "Book already checked",
-                checkedBook);
+        Book checkedBook = Book.builder()
+                .id(checkBookEvent.getBook().getId())
+                .name(checkBookEvent.getBook().getName())
+                .description(checkBookEvent.getBook().getDescription())
+                .status("CHECKED")
+                .price(checkBookEvent.getBook().getPrice())
+                .build();
+
+        CheckBookEvent checkEvent = CheckBookEvent.builder()
+                .bookEventStatus("CHECKED")
+                .message("Book already checked")
+                .book(checkedBook).build();
 
         kafkaTemplate.send("verify_book_topic", checkEvent);
 
