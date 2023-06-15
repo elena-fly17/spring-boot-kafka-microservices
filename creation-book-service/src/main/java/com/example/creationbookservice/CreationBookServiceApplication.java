@@ -1,14 +1,7 @@
 package com.example.creationbookservice;
 
-import com.example.creationbookservice.kafka_config.BookEvent;
-import com.example.creationbookservice.model.Book;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.core.KafkaTemplate;
 
 @SpringBootApplication
 public class CreationBookServiceApplication {
@@ -17,28 +10,4 @@ public class CreationBookServiceApplication {
 		SpringApplication.run(CreationBookServiceApplication.class, args);
 	}
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(CreationBookServiceApplication.class);
-
-	@Bean
-	CommandLineRunner commandLineRunner(KafkaTemplate<String, BookEvent> kafkaTemplate) {
-		return args -> {
-			for (int i = 1; i < 3; i++) {
-				StringBuilder builderName = new StringBuilder();
-				StringBuilder builderDescription = new StringBuilder();
-				builderName.append("Book ").append(i);
-				builderDescription.append("About Book ").append(i);
-
-				Book book = new Book(i, builderName.toString(), builderDescription.toString(),
-						"UNCHECKED", i * 100);
-
-				BookEvent bookEvent = new BookEvent("WAITING FOR VERIFICATION",
-						"The book must be checked", book);
-
-				kafkaTemplate.send("new_book_topic", bookEvent);
-
-				LOGGER.info(String.format("Book event => %s", bookEvent.toString()));
-			}
-		};
-	}
 }

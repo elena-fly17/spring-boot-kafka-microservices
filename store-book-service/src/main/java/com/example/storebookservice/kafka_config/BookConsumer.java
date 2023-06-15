@@ -19,10 +19,6 @@ public class BookConsumer {
     @KafkaListener(topics = "verify_book_topic", groupId = "repositoryBooks")
     void bookConsume(StoreBookEvent storeBookEvent) {
 
-        // StoreBookEvent localStoreBookEvent = storeBookEvent;
-        // storeBooks.add(localStoreBookEvent.getBook());
-        // storeBooks.add(storeBookEvent.getBook());
-        ////////////
         storeBooks.add(storeBookEvent.getBook());
 
         LOGGER.info(String.format("The book saved to the list => %s",
