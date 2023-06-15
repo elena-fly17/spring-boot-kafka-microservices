@@ -32,10 +32,8 @@ public class CreationBookServiceApplication {
 				Book book = new Book(i, builderName.toString(), builderDescription.toString(),
 						"UNCHECKED", i * 100);
 
-				BookEvent bookEvent = new BookEvent();
-				bookEvent.setBookEventStatus("WAITING FOR VERIFICATION");
-				bookEvent.setMessage("The book must be checked");
-				bookEvent.setBook(book);
+				BookEvent bookEvent = new BookEvent("WAITING FOR VERIFICATION",
+						"The book must be checked", book);
 
 				kafkaTemplate.send("new_book_topic", bookEvent);
 

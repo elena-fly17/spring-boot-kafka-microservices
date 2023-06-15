@@ -18,22 +18,19 @@ public class BookConsumerAndProducer {
     @Qualifier("getKafkaTemplate")
     private KafkaTemplate<String, CheckBookEvent> kafkaTemplate;
 
-    @KafkaListener(topics = "new_book_topic",
-            groupId = "checkBooks")
-    void bookConsumeAndProduce(CheckBookEvent bookEvent) {
+    @KafkaListener(topics = "new_book_topic", groupId = "checkBooks")
+    void bookConsumeAndProduce(CheckBookEvent checkBookEvent) {
 
-        com.example.checkbookservice.model.Book checkedBook =
-                new Book(bookEvent.getBook().getId(),
-                bookEvent.getBook().getName(),
-                bookEvent.getBook().getDescription(),
+        Book checkedBook = new Book(checkBookEvent.getBook().getId(),
+                checkBookEvent.getBook().getName(),
+                checkBookEvent.getBook().getDescription(),
                 "CHECKED",
-                bookEvent.getBook().getPrice());
-        CheckBookEvent checkEvent =
-                new CheckBookEvent("CHECKED",
+                checkBookEvent.getBook().getPrice());
+        CheckBookEvent checkEvent = new CheckBookEvent("CHECKED",
                 "Book already checked",
                 checkedBook);
 
-        kafkaTemplate.send("new_book_checked_topic", checkEvent);
+        kafkaTemplate.send("verify_book_topic", checkEvent);
 
         LOGGER.info(String.format("Checked book send to kafka => %s",
                 checkEvent.toString()));
